@@ -1,0 +1,15 @@
+---
+title: "Project layout"
+format: html
+---
+
+```{mermaid}
+graph TD
+    A[selenium web scraper] --> |raw data storage|B(data cleaning)
+    B --> |cleaned data storage|C[EDA]
+    C --> |EDA output|D[Modeling]
+    D --> F[model evaluation and monitoring]
+    D --> E[dashboard]
+
+
+```
