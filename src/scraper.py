@@ -1,35 +1,39 @@
+# %%
 from time import sleep
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
-story = 'https://medium.com/dropout-analytics/selenium-and-geckodriver-on-mac-b411dbfe61bc'
-# 'https://bit.ly/2WaKraO' <- short link
-story = story + '?source=friends_link&sk=18e2c2f07fbe1f8ae53fef5ad57dbb12'
+url = 'https://www.drinktrade.com/coffee/all-coffee'
 
 
-def gecko_test(site_000=story):
+def get_links(url_=url):
     """
-    simple overview:
-        1) set up webdriver
-        2) load this article 
-        3) close up shop 
 
-    input:
-        >> site_000
-            > default: url of this article ('friend link')
     """
     # set the driver
-    driver = webdriver.Firefox()
+    # Getting all the links on the page.
+    driver = webdriver.Chrome()
+    driver_options = Options()
+    driver_options.add_experimental_option('detatch', True)
 
-    # load this article
-    driver.get(site_000)
-    # and chill a bit
-    sleep(7)
+    # go to page
+    driver.get(url_)
 
-    # k, cool. let's bounce.
-    driver.quit()
+    # ? click load more button until its gone - works, but #TODO  come back to this after testing if we can get all the links
+    # while True:
+    #     try:
+    #         load_more = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div[4]/div[2]/div/div[3]/button')
+    #         sleep(2)
+    #         load_more.click()
+    #         sleep(2)
+    #     except Exception as e:
+    #         print(e)
 
+    # TODO get all product links - working on this
 
-# make runable
-if __name__ == '__main__':
-    # here we go
-    gecko_test()
+    a_tags = driver.find_element(By.TAG_NAME, 'a')
+    links = [a_tag.get_attribute('href') for a_tag in a_tags]
+    return links
+
+# %%
