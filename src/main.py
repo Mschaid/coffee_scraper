@@ -13,23 +13,25 @@ logging.basicConfig(filename='/Users/michaelschaid/GitHub/coffee_scraper/logs/ma
 
 
 def main(url):
-    scraper = Scraper(url, timeout=20, headless=False)
+    scraper = Scraper(url, timeout=30, headless=False)
     logger.info('Scraper initialized')
 
     scraper.get_url()
     logger.info('driver initialized')
-    
+
     scraper.load_all()
     logger.info('all products loaded')
 
     scraper.retrieve_links()
     scraper.save_data(scraper.href_links, 'href_links')
-    
+
     logger.info(f'total links collected and saved: {len(scraper.href_links)}')
-    
+
     scraper.get_all_product_info()
     scraper.save_data(scraper.products_data, 'products_data')
-    logger.info(f'all product info collected and saved to: {scraper.data_path}')
+    logger.info(
+        f'all product info collected and saved to: {scraper.data_path}')
+
 
 if __name__ == '__main__':
     url = 'https://www.drinktrade.com/coffee/all-coffee'

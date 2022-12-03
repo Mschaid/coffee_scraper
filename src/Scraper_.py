@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import Select
 
 
 class Scraper:
@@ -83,32 +84,48 @@ class Scraper:
         ## Returns:
             dictioary: returns brand, roaster location product name, notes, product description, and prices
         """
+        def get_bag_size():
+            '''helper function go retrieve bag size'''
+            one_purchase_button = self.driver.find_elements(
+                By.CLASS_NAME, 'collection-purchase__radio-wrapper ')[0]
+            one_purchase_button.click()
+            sleep(5)
+            return one_purchase_button.text.split('\n')[4]
 
+        def get_product_info():
+            '''helper function to retrieve product info'''
+            return self.driver.find_element(By.CLASS_NAME, 'pdp-collections__sidebar-wrapper').text.split("\n")
+
+        def get_processing_mentod():
+            '''helper function to retrieve processing method'''
+            return self.driver.find_element(By.CLASS_NAME, 'list-value').text
+
+        def get_roaster_notes():
+            '''helper function to retrieve roaster notes'''
+            return self.driver.find_element(By.CLASS_NAME, 'roaster-notes-body').text
+
+        # get url, sleep, and get all product data
         self.driver.get(url)
         sleep(5)
 
-        product_info = self.driver.find_element(
-            By.CLASS_NAME, 'pdp-collections__sidebar-wrapper').text.split("\n")
+        # get product info as list, to be paresed in dict
+        product_info = get_product_info()
 
-        process_method = self.driver.find_element(
-            By.CLASS_NAME, 'list-value').text
-
-        roaster_notes = self.driver.find_element(
-            By.CLASS_NAME, 'roaster-notes-body').text
-
+        # get product as dictionary
         product_data = {
             'brand': product_info[0],
             'roaster_location': product_info[1],
             'product_name': product_info[2],
             'product_notes': product_info[3],
-            'process_method': process_method,
-            'roaster_notes': roaster_notes,
+            'process_method': get_processing_mentod(),
+            'roaster_notes': get_roaster_notes(),
             'product_description': product_info[4],
+            'roast_collection': product_info[11],
             'single_purchace_price': product_info[6],
+            'bag_sizes': get_bag_size(),
             'single_shipping_price': product_info[7],
             'subscription_price': product_info[9],
             'subscription_shipping_price': product_info[10],
-            'roast_collection': product_info[11]
         }
         return (product_data)
 
@@ -120,3 +137,5 @@ class Scraper:
         """
         self.products_data = {link.split(
             '/')[-1]: self.get_product_info(link) for link in self.href_links}
+
+# %%
